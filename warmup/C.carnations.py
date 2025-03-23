@@ -1,17 +1,16 @@
-def minimal(n: int, coordinates: list[int]) -> int:
-    coordinates.sort()
-    dp = [0] * (n + 1)
-    dp[1] = 0
-    for i in range(2, n + 1):
-        dp[i] = min(dp[i - 1] + (coordinates[i - 1] - coordinates[i - 2]),
-            dp[i - 2] + (coordinates[i - 1] - coordinates[i - 2]))
-    return dp[n]
-
-
 def main():
     n = int(input())
-    coords = list(map(int, input().split()))
-    print(minimal(n=n, coordinates=coords))
+    a = list(map(int, input().split()))
+    a.sort()
+    if n == 2:
+        print(a[1] + a[0])
+        return
 
-if __name__ == '__main__':
+    s = [a[1] - a[0], a[2] - a[0]]
+    for i in range(2, len(a) - 1):
+        s.append(min(s[i - 1], s[i - 2]) + abs(a[i] - a[i + 1]))
+
+    print(s[-1])
+
+if __name__ == "__main__":
     main()
