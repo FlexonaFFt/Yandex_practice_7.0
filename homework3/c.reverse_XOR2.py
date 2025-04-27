@@ -1,41 +1,43 @@
 def solve():
-    # Читаем входные данные
     n = int(input())
-    numbers = list(map(int, input().split()))
+    a = list(map(int, input().split()))
 
-    # Преобразуем числа в двоичное представление
-    binary_numbers = [bin(num)[2:] for num in numbers]
+    # Найдем максимальную длину в битах
+    max_len = max(a).bit_length()
 
-    # Находим максимальную длину двоичного представления
-    max_length = max(len(num) for num in binary_numbers)
+    # Представим все числа как списки битов (с выравниванием)
+    bits = []
+    for num in a:
+        b = bin(num)[2:].zfill(max_len)
+        bits.append(list(b))
 
-    # Дополняем числа ведущими нулями
-    padded_numbers = [num.zfill(max_length) for num in binary_numbers]
+    # Считаем количество единиц на каждой позиции
+    ones = [0] * max_len
+    for b in bits:
+        for i in range(max_len):
+            if b[i] == '1':
+                ones[i] += 1
 
-    # Создаем матрицу битов
-    bit_matrix = []
-    for num in padded_numbers:
-        bit_matrix.append(list(map(int, num)))
-
-    # Проверяем возможность решения
-    for col in range(max_length):
-        ones_count = sum(row[col] for row in bit_matrix)
-        if ones_count % 2 != 0:
-            print("impossible")
+    # Проверяем: если сумма единиц на позиции нечётная — невозможно
+    for count in ones:
+        if count % 2 != 0:
+            print('impossible')
             return
 
-    # Если решение возможно, строим новые числа
-    new_numbers = []
-    for i in range(n):
-        new_number_bits = [0] * max_length
-        for j in range(max_length):
-            if bit_matrix[i][j] == 1:
-                # Переносим единицы в новое число
-                new_number_bits[j] = 1
-        new_numbers.append(int(''.join(map(str, new_number_bits)), 2))
+    # Теперь нужно распределить биты по позициям
+    result = [0] * n
+    for i in range(max_len):
+        one_indices = [idx for idx, b in enumerate(bits) if b[i] == '1']
+        zero_indices = [idx for idx, b in enumerate(bits) if b[i] == '0']
 
-    # Выводим результат
-    print(*new_numbers)
+        # Поровну разделим единицы
+        half = len(one_indices) // 2
+        for idx in one_indices[:half]:
+            result[idx] = (result[idx] << 1) | 1
+        for idx in one_indices[half:] + zero_indices:
+            result[idx] = (result[idx] << 1) | 0
 
-# Вызываем функцию
+    print(*result)
+
+# Пример использования
 solve()
