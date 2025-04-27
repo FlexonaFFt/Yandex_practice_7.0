@@ -1,17 +1,14 @@
 def main():
     n = int(input())
-    if n == 0:
-        return 0
-    else:
-        binary = bin(n)[2:]
-        max_binary = binary
-        current = binary
+    binary = bin(n)[2:]
+    max_val = n
 
-        for _ in range(len(binary)):
-            current = current[-1] + current[:-1]
-            if current > max_binary:
-                max_binary = current
+    for _ in range(len(binary) - 1):
+        binary = binary[-1] + binary[:-1]
+        val = int(binary, 2)
+        if val > max_val:
+            max_val = val
 
-        print(int(max_binary, 2))
+    print(max_val)
 
 main()
